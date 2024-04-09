@@ -4,6 +4,9 @@ import com.erick.technicaltest.springbootcrudspaceships.entities.Ships;
 import com.erick.technicaltest.springbootcrudspaceships.exception.ResourceNotFoundException;
 import com.erick.technicaltest.springbootcrudspaceships.repositories.ShipsRepository;
 import com.erick.technicaltest.springbootcrudspaceships.service.ShipsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,6 +24,10 @@ import java.util.*;
 // This class will be used to handle the CRUD operations for the ships
 @RestController
 @RequestMapping("/api/ships")
+@Tag(
+        name = "Ships",
+        description = "API to handle the CRUD operations for the ships"
+)
 public class ShipsController {
 
     // Injecting the ShipsRepository
@@ -35,6 +42,14 @@ public class ShipsController {
 
     // Create ship (Create) and validate the fields
     @PostMapping
+    @Operation(
+            summary = "Create a new ship",
+            description = "Create a new ship and save it to the database"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Ship created successfully"
+    )
     public ResponseEntity<?> create (@Valid @RequestBody Ships ship, BindingResult result) {
         if (result.hasFieldErrors()) {
             return validation(result);
@@ -44,6 +59,14 @@ public class ShipsController {
 
     // List all ships (Read) and paginate the results to 5 per page
     @GetMapping
+    @Operation(
+            summary = "List all ships",
+            description = "List all ships and paginate the results to 5 per page"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "List of ships successfully retrieved"
+    )
     public List<Ships> list(@RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 5);
         Page<Ships> shipsPage = repository.findAll(pageable);
@@ -56,6 +79,14 @@ public class ShipsController {
 
     // View a ship (Read)
     @GetMapping("/{id}")
+    @Operation(
+            summary = "View a ship",
+            description = "View a ship by its id"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Ship founded by id successfully retrieved"
+    )
     public ResponseEntity<?> view (@PathVariable Long id) {
         Optional<Ships> shipsOptional = service.findById(id);
         if (shipsOptional.isPresent()) {
@@ -66,6 +97,14 @@ public class ShipsController {
 
     // View all the ships that have a name that contains the given string (Read)
     @GetMapping("/name/{name}")
+    @Operation(
+            summary = "View a ship by its name",
+            description = "View all the ships that have a name that contains the given string, case insensitive"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Ship founded by name successfully retrieved"
+    )
     public ResponseEntity<?> viewByName (@PathVariable String name) {
         List<Ships> ships = repository.findAllByNameContainingIgnoreCase(name);
         if (ships.isEmpty()) {
@@ -77,6 +116,14 @@ public class ShipsController {
 
     // Update a ship (Update) and validate the fields
     @PutMapping("/{id}")
+    @Operation(
+            summary = "Update a ship",
+            description = "Update a ship by its id"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Ship updated successfully"
+    )
     public ResponseEntity<?> update ( @Valid @RequestBody Ships ship, BindingResult result,@PathVariable Long id) {
         if (result.hasFieldErrors()) {
             return validation (result);
@@ -91,6 +138,14 @@ public class ShipsController {
 
     // Delete a ship (Delete)
     @DeleteMapping ("/{id}")
+    @Operation(
+            summary = "Delete a ship",
+            description = "Delete a ship by its id"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Ship deleted successfully"
+    )
     public ResponseEntity<?> delete (@PathVariable Long id) {
         Optional<Ships> shipsOptional = service.deleteById(id);
         if (shipsOptional.isPresent()) {
