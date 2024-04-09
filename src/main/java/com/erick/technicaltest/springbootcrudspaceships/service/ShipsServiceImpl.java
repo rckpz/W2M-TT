@@ -4,6 +4,9 @@ import com.erick.technicaltest.springbootcrudspaceships.entities.Ships;
 import com.erick.technicaltest.springbootcrudspaceships.repositories.ShipsRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,24 +30,26 @@ public class ShipsServiceImpl implements ShipsService{
     }
 
     @Transactional (readOnly = true)
+    @Cacheable(value = "ship", key = "#id")
     @Override
     public Optional<Ships> findById(Long id) {
         return repository.findById(id);
     }
 
     @Transactional
+    @CachePut(value = "ship", key = "#result.id")
     @Override
     public Ships save(Ships ship) {
         return repository.save(ship);
     }
 
     @Transactional
+    @CachePut(value = "ship", key = "#id")
     @Override
     public Optional<Ships> update(Long id, Ships ship) {
         Optional <Ships> shipOptional = repository.findById(id);
         if(shipOptional.isPresent()) {
             Ships shipsDb = shipOptional.orElseThrow();
-
             shipsDb.setName(ship.getName());
             shipsDb.setMovie(ship.getMovie());
             return Optional.of(repository.save(shipsDb));
@@ -52,6 +57,8 @@ public class ShipsServiceImpl implements ShipsService{
         return shipOptional;
     }
 
+    @Transactional
+    @CacheEvict(value = {"ship", "list"}, key = "#id")
     @Override
     public Optional<Ships> deleteById(Long id) {
         Optional <Ships> shipOptional = repository.findById(id);

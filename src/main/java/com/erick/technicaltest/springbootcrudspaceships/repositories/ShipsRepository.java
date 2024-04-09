@@ -11,6 +11,7 @@ import java.util.List;
 public interface ShipsRepository extends JpaRepository<Ships, Long> {
 
     // These additional methods can be used to query the database
+
     // For example, to find a ship by name
     public Ships findByName(String name);
 

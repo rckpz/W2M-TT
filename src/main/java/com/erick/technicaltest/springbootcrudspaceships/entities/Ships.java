@@ -3,13 +3,17 @@ package com.erick.technicaltest.springbootcrudspaceships.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 // This class will be used to instantiate the Ships object
 @Setter
 @Getter
 @Entity
-public class Ships {
+@NoArgsConstructor
+public class Ships implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,22 +11,22 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 
 import java.time.Duration;
 
-// Configuración de cache con Redis
+// Redis cache configuration
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
-    // Configuración de conexión con Redis
+    // Redis connection factory
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
     }
 
-    // Configuración de cache con Redis
+    // Redis cache manager
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration RedisCacheConfiguration = org.springframework.data.redis.cache.RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10));
+                .entryTtl(Duration.ofMinutes(5));
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(RedisCacheConfiguration)
                 .transactionAware()
