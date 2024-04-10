@@ -3,14 +3,9 @@ package com.erick.technicaltest.springbootcrudspaceships.exception;
 import com.erick.technicaltest.springbootcrudspaceships.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // This class will be used to handle the exceptions thrown by the application
 @RestControllerAdvice

@@ -20,7 +20,4 @@ public class LoggingAspect {
         }
     }
 
-    public void loggerAfter() {
-        logger.info("Method executed successfully");
-    }
 }

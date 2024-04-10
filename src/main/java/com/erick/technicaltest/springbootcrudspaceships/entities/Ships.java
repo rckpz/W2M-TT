@@ -1,7 +1,9 @@
 package com.erick.technicaltest.springbootcrudspaceships.entities;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,4 @@ public class Ships implements Serializable {
 
     @NotEmpty(message = "is required")
     private String movie;
-
-
 }

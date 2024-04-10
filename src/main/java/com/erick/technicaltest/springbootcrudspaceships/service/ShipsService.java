@@ -10,13 +10,15 @@ public interface ShipsService {
 
     // CRUD methods
 
-    public List<Ships> findAll();
+    List<Ships> findAll();
 
-    public Optional<Ships> findById(Long id);
+    Optional<Ships> findById(Long id);
 
-    public Ships save(Ships ship);
+    Ships save(Ships ship);
 
     Optional<Ships> update(Long id, Ships ship);
 
     Optional<Ships> deleteById(Long id);
+
+    List<Ships> findAllByNameContainingIgnoreCase(String name);
 }

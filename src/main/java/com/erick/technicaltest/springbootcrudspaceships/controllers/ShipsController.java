@@ -8,18 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 // This class will be used to handle the CRUD operations for the ships
 @RestController
@@ -28,14 +26,13 @@ import java.util.*;
         name = "Ships",
         description = "API to handle the CRUD operations for the ships"
 )
+@AllArgsConstructor
 public class ShipsController {
 
     // Injecting the ShipsRepository
-    @Autowired
     private ShipsRepository repository;
 
     // Injecting the ShipsService
-    @Autowired
     private ShipsService service;
 
     // Implementing the CRUD methods
@@ -50,11 +47,12 @@ public class ShipsController {
             responseCode = "201",
             description = "Ship created successfully"
     )
-    public ResponseEntity<?> create (@Valid @RequestBody Ships ship, BindingResult result) {
-        if (result.hasFieldErrors()) {
-            return validation(result);
+    public ResponseEntity<Ships> create (@Valid @RequestBody Ships ship) {
+        Ships savedShip = service.save(ship);
+        if (savedShip == null) {
+            throw new IllegalArgumentException("Invalid ship provided");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(ship));
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedShip);
     }
 
     // List all ships (Read) and paginate the results to 5 per page
@@ -87,7 +85,7 @@ public class ShipsController {
             responseCode = "200",
             description = "Ship founded by id successfully retrieved"
     )
-    public ResponseEntity<?> view (@PathVariable Long id) {
+    public ResponseEntity<Ships> view (@PathVariable Long id) {
         Optional<Ships> shipsOptional = service.findById(id);
         if (shipsOptional.isPresent()) {
             return ResponseEntity.ok(shipsOptional.orElseThrow());
@@ -105,8 +103,8 @@ public class ShipsController {
             responseCode = "200",
             description = "Ship founded by name successfully retrieved"
     )
-    public ResponseEntity<?> viewByName (@PathVariable String name) {
-        List<Ships> ships = repository.findAllByNameContainingIgnoreCase(name);
+    public ResponseEntity<List<Ships>> viewByName (@PathVariable String name) {
+        List<Ships> ships = service.findAllByNameContainingIgnoreCase(name);
         if (ships.isEmpty()) {
             throw new ResourceNotFoundException("Ship" + " with the name " + name);
         }
@@ -124,11 +122,7 @@ public class ShipsController {
             responseCode = "201",
             description = "Ship updated successfully"
     )
-    public ResponseEntity<?> update ( @Valid @RequestBody Ships ship, BindingResult result,@PathVariable Long id) {
-        if (result.hasFieldErrors()) {
-            return validation (result);
-        }
-
+    public ResponseEntity<Ships> update ( @Valid @RequestBody Ships ship,@PathVariable Long id) {
         Optional<Ships> shipsOptional = service.update(id, ship);
         if (shipsOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(shipsOptional.orElseThrow());
@@ -146,19 +140,12 @@ public class ShipsController {
             responseCode = "200",
             description = "Ship deleted successfully"
     )
-    public ResponseEntity<?> delete (@PathVariable Long id) {
+    public ResponseEntity<Ships> delete (@PathVariable Long id) {
         Optional<Ships> shipsOptional = service.deleteById(id);
         if (shipsOptional.isPresent()) {
             return ResponseEntity.ok(shipsOptional.orElseThrow());
         }
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("Ship", "id", id);
     }
 
-    // Method to validate the fields
-    private ResponseEntity<?> validation(BindingResult result) {
-        Map<String, String> errors = new HashMap<>();
-
-        result.getFieldErrors().forEach(err -> errors.put(err.getField(), "The field " + err.getField() + " " + err.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(errors);
-    }
 }

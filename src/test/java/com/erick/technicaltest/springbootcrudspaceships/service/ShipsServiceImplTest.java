@@ -3,7 +3,6 @@ package com.erick.technicaltest.springbootcrudspaceships.service;
 import com.erick.technicaltest.springbootcrudspaceships.entities.Ships;
 import com.erick.technicaltest.springbootcrudspaceships.repositories.ShipsRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

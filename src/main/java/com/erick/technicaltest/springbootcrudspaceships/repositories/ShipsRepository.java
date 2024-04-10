@@ -12,12 +12,6 @@ public interface ShipsRepository extends JpaRepository<Ships, Long> {
 
     // These additional methods can be used to query the database
 
-    // For example, to find a ship by name
-    public Ships findByName(String name);
-
     // Find all the ships that have a name that contains the given string
     List<Ships> findAllByNameContainingIgnoreCase(String name);
-
-    // Or to find a ship by movie
-    List<Ships> findAllByMovie(String movie);
 }

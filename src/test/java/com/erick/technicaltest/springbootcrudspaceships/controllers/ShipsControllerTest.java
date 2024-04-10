@@ -3,7 +3,6 @@ package com.erick.technicaltest.springbootcrudspaceships.controllers;
 import com.erick.technicaltest.springbootcrudspaceships.entities.Ships;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @WebAppConfiguration
@@ -51,9 +50,10 @@ class ShipsControllerTest {
     }
 
     @Test
-    void view() throws Exception {
-        MvcResult mockMvcResult = mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/1").
+    void viewById() throws Exception {
+        MvcResult mockMvcResult = mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/2").
                 accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(200, mockMvcResult.getResponse().getStatus());
     }
 
     @Test

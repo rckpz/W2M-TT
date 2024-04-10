@@ -2,8 +2,7 @@ package com.erick.technicaltest.springbootcrudspaceships.service;
 
 import com.erick.technicaltest.springbootcrudspaceships.entities.Ships;
 import com.erick.technicaltest.springbootcrudspaceships.repositories.ShipsRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,10 +14,10 @@ import java.util.Optional;
 
 // This class will be used to implement the CRUD methods for the ships
 @Service
+@AllArgsConstructor
 public class ShipsServiceImpl implements ShipsService{
 
     // Injecting the repository to the service
-    @Autowired
     private ShipsRepository repository;
 
     // Implementing the CRUD methods
@@ -64,6 +63,13 @@ public class ShipsServiceImpl implements ShipsService{
         Optional <Ships> shipOptional = repository.findById(id);
         shipOptional.ifPresent(shipsDb -> repository.delete(shipsDb));
         return shipOptional;
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "list", key = "#name")
+    @Override
+    public List<Ships> findAllByNameContainingIgnoreCase(String name) {
+        return repository.findAllByNameContainingIgnoreCase(name);
     }
 
 }
